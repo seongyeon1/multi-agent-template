@@ -3,7 +3,7 @@
 
 사용:
     python scripts/new_agent.py <slug>
-    # 예: python scripts/new_agent.py tax  →  agents/tax/ (TAX_AGENT_ prefix)
+    # 예: python scripts/new_agent.py orders  →  agents/orders/ (ORDERS_AGENT_ prefix)
 
 생성물은 `agents/<slug>/` 안에만 들어가므로 다른 에이전트에 영향이 없다.
 slug 는 소문자/숫자/하이픈만. 패키지명은 `<slug>_agent`, env prefix 는

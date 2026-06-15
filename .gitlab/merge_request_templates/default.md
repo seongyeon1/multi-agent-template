@@ -1,6 +1,6 @@
 <!--
 MR 제목도 Conventional Commit 규약을 따르세요: type(scope): 요약
-  예) refactor(tax-agent): TAXAGENT_ env 를 TAX_AGENT_ 로 통일
+  예) refactor(orders): 주문 검증 규칙 정리
 scope = 건드린 영역 (에이전트 slug 또는 common/ci).
 -->
 

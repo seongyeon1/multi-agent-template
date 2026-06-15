@@ -4,7 +4,7 @@
 **에이전트끼리는 격리**(한쪽 변경이 다른 쪽에 영향 X)하는 재사용 가능한 골격.
 
 도메인 중립 템플릿입니다. 조직 특화(게이트웨이/스토리지 구체 구현, 사내 CI)는
-이 템플릿을 상속한 인스턴스(예: `skt-agent-template`)에서 채웁니다.
+이 템플릿을 상속한 조직별 인스턴스에서 채웁니다.
 
 ## 핵심 아이디어
 
@@ -27,7 +27,7 @@ make hooks          # pre-commit 훅 등록 (commit-msg 포함)
 make lint           # ruff + env 규약 + 격리 계약
 make test           # 전체 테스트
 
-make new-agent NAME=tax     # agents/tax/ 스캐폴드 (TAX_AGENT_ prefix)
+make new-agent NAME=orders  # agents/orders/ 스캐폴드 (ORDERS_AGENT_ prefix)
 ```
 
 ## 디렉토리

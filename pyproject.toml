@@ -56,13 +56,13 @@ include_external_packages = true
 name = "common 은 어떤 에이전트도 import 하지 않는다"
 type = "forbidden"
 source_modules = ["agent_common"]
-# 새 에이전트 추가 시 여기에 패키지명(예 tax_agent)을 더한다.
+# 새 에이전트 추가 시 여기에 패키지명(예 orders_agent)을 더한다.
 forbidden_modules = ["example_agent"]
 
 [[tool.importlinter.contracts]]
 name = "에이전트끼리 상호 import 금지 (격리)"
 type = "independence"
-# 새 에이전트 추가 시 이 목록에 패키지명을 더한다 (tax_agent, medical_agent ...).
+# 새 에이전트 추가 시 이 목록에 패키지명을 더한다 (orders_agent, billing_agent ...).
 modules = ["example_agent"]
 
 [[tool.importlinter.contracts]]

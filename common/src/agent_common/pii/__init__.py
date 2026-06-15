@@ -1,7 +1,7 @@
 """PII 처리 (공통 인프라 stub).
 
 가명화/복원 자리표시자. 구성값은 공통 ``PII_*`` prefix 에서 읽는다.
-실제 암복호(예 PII_CIPHER_KEY 기반)는 SKT 인스턴스가 채운다.
+실제 암복호(예 PII_CIPHER_KEY 기반)는 상속 인스턴스가 채운다.
 가명화는 ``PII_PSEUDONYMIZE`` 공통 토글 뒤에 두고 기본 off.
 """
 

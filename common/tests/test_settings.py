@@ -26,18 +26,18 @@ def test_env_int_fallback_on_garbage(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_env_with_alias_prefers_new_and_warns_on_old(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("TAX_AGENT_DB_URL", raising=False)
-    monkeypatch.setenv("TAXAGENT_DB_URL", "postgres://old")
+    monkeypatch.delenv("ORDERS_AGENT_DB_URL", raising=False)
+    monkeypatch.setenv("ORDERSAGENT_DB_URL", "postgres://old")
     with pytest.warns(DeprecationWarning):
-        assert S.env_with_alias("TAX_AGENT_DB_URL", "TAXAGENT_DB_URL") == "postgres://old"
+        assert S.env_with_alias("ORDERS_AGENT_DB_URL", "ORDERSAGENT_DB_URL") == "postgres://old"
 
-    monkeypatch.setenv("TAX_AGENT_DB_URL", "postgres://new")
-    assert S.env_with_alias("TAX_AGENT_DB_URL", "TAXAGENT_DB_URL") == "postgres://new"
+    monkeypatch.setenv("ORDERS_AGENT_DB_URL", "postgres://new")
+    assert S.env_with_alias("ORDERS_AGENT_DB_URL", "ORDERSAGENT_DB_URL") == "postgres://new"
 
 
 def test_agent_settings_rejects_bad_prefix() -> None:
     with pytest.raises(ValueError):
-        AgentSettings("tax_agent_")  # 소문자
+        AgentSettings("orders_agent_")  # 소문자
     with pytest.raises(ValueError):
         AgentSettings("TAX_")  # _AGENT_ 없음
 

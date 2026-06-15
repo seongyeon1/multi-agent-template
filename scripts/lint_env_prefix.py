@@ -4,7 +4,8 @@
 규칙 1: `os.getenv` / `os.environ[...]` 직접 호출 금지 (settings.py 밖에서).
         → 모든 환경변수 접근은 agent_common.settings 를 거쳐야 한다.
 규칙 2: 에이전트 코드가 읽는 env 이름은 <NAME>_AGENT_ prefix 이거나
-        승인된 공통 prefix(LLM_GW_/OCR_/S3_/REDIS_/PII_/플랫폼값) 여야 한다.
+        승인된 공통 prefix(아래 COMMON_PREFIXES) 여야 한다. 조직 인프라 prefix 는
+        COMMON_PREFIXES 에 추가해 확장한다.
 
 규칙 2 는 settings 헬퍼 호출 인자(문자열 리터럴)를 정적으로 훑어 검사한다.
 완벽한 정적분석은 아니지만 리터럴 오타/규약이탈을 값싸게 잡는다.
@@ -28,17 +29,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 GETENV_ALLOWED = {REPO_ROOT / "common" / "src" / "agent_common" / "settings.py"}
 
 # 규칙 2 — 승인된 공통 prefix (에이전트 고유가 아닌 인프라/플랫폼값).
+#   도메인 중립 기본값. 조직별 인프라 prefix(게이트웨이/OCR/벤더 등)는 여기에 추가한다.
 COMMON_PREFIXES = (
-    "LLM_GW_",
-    "OCR_",
+    "LLM_",
     "S3_",
     "REDIS_",
     "PII_",
-    "BRAIN_PARSER_",
-    "SLLM_",
-    "SCZ_OAUTH_",
+    "LOG_",
 )
-COMMON_EXACT = {"ENVIRONMENT", "LOG_FORMAT", "ALLOWED_ORIGINS"}
+COMMON_EXACT = {"ENVIRONMENT", "LOG_FORMAT", "ALLOWED_ORIGINS", "DEV_DEBUG_LOG"}
 
 # settings 헬퍼 — 첫 인자가 env 이름. (AgentSettings.str/flag/int 는 prefix 가
 # 객체에 박혀 있으므로 여기서 검사 대상에서 제외; 생성자 prefix 검증은 런타임에.)

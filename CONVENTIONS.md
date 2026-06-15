@@ -22,8 +22,8 @@
 
 ## 2. 환경변수 [강제]
 
-- **에이전트 고유** → `<NAME>_AGENT_<KEY>` (예 `TAX_AGENT_API_PORT`).
-- **공통 인프라** → 안정 prefix 유지: `LLM_GW_` `OCR_` `S3_` `REDIS_` `PII_` `BRAIN_PARSER_` `SLLM_` `SCZ_OAUTH_` + 플랫폼값 `ENVIRONMENT` `LOG_FORMAT` `ALLOWED_ORIGINS`.
+- **에이전트 고유** → `<NAME>_AGENT_<KEY>` (예 `ORDERS_AGENT_API_PORT`).
+- **공통 인프라** → 안정 prefix 유지: `LLM_` `S3_` `REDIS_` `PII_` `LOG_` + 플랫폼값 `ENVIRONMENT` `LOG_FORMAT` `ALLOWED_ORIGINS`. 조직 인프라 prefix 는 `scripts/lint_env_prefix.py` 의 `COMMON_PREFIXES` 에 추가해 확장.
 - **`os.getenv` 직접 호출 금지** — 모든 접근은 `agent_common.settings` 경유. (`scripts/lint_env_prefix.py` 가 강제)
 - `.env` 분리: 루트 `.env.common.example` + `agents/<x>/.env.agent.example`. 실제 `.env`/시크릿은 미커밋.
 - 구→신 prefix 이행은 `env_with_alias(new, old)` 로 무중단 (구 이름 사용 시 DeprecationWarning).
@@ -44,7 +44,7 @@
 
 - **Conventional Commits**: `type(scope): 한글 요약`.
   - type ∈ `feat|fix|refactor|chore|docs|test|perf|build|ci|style|revert`
-  - **scope 필수** = 건드린 영역 (에이전트 slug 또는 `common`/`ci`). 예: `refactor(tax-agent): …`, `feat(common): …`
+  - **scope 필수** = 건드린 영역 (에이전트 slug 또는 `common`/`ci`). 예: `refactor(orders): …`, `feat(common): …`
 - **AI 흔적 라인 금지** (`Co-Authored-By: …Claude`, `🤖`, `Generated with`). (`scripts/check_commit_msg.py` 가 강제)
 - MR 은 `.gitlab/merge_request_templates/default.md` 체크리스트를 채운다.
 - **[규율]** 배포 트리에 tests/docs/scripts/notebooks/data 미포함.

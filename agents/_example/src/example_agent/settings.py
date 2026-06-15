@@ -1,7 +1,7 @@
 """example_agent 고유 설정 — EXAMPLE_AGENT_ prefix 전용.
 
 새 에이전트는 `scripts/new_agent.py` 가 이 파일을 복제하며 prefix 를 치환한다
-(EXAMPLE_AGENT_ → TAX_AGENT_ 등). 호출부는 여기 정의된 typed 필드만 읽고,
+(EXAMPLE_AGENT_ → ORDERS_AGENT_ 등). 호출부는 여기 정의된 typed 필드만 읽고,
 환경변수 이름이나 os.getenv 를 직접 만지지 않는다.
 """
 from __future__ import annotations

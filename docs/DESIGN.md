@@ -1,12 +1,12 @@
 # 설계: multi-agent 모노레포 하네스
 
-> 본 문서는 `tax_agent-phase-a` 하네스에서 추출한 컨벤션을 재사용 가능한 모노레포
-> 골격으로 정리한 설계 근거다. 산출물 계보: `multi-agent-template`(generic, 본 repo)
-> → `skt-agent-template`(SKT 구체화) → `scz-sys`(실 모노레포).
+> 본 문서는 여러 AI 에이전트를 한 모노레포에서 개발할 때의 컨벤션을 재사용 가능한
+> 골격으로 정리한 설계 근거다. 이 템플릿은 도메인 중립이며, 조직 특화 구현은 이
+> 템플릿을 상속한 인스턴스가 채운다.
 
 ## 1. 문제
 
-여러 에이전트(tax/medical/icms/…)를 한 모노레포(`scz-sys`)에서 개발한다. 두 요구가 충돌한다:
+여러 에이전트를 한 모노레포에서 개발한다. 두 요구가 충돌한다:
 
 1. **공통 코드 공유** — 게이트웨이/스토리지/PII/로깅/설정을 중복 없이.
 2. **에이전트 간 무영향** — 한 에이전트 커밋이 다른 에이전트에 영향을 주면 안 됨.
@@ -24,9 +24,9 @@
 ## 3. 환경변수
 
 - 두 네임스페이스: 에이전트 고유 `<NAME>_AGENT_*`, 공통 인프라 안정 prefix.
-- 중앙 로더 `agent_common.settings` — 흩어진 `os.getenv`(구 코드 30여 파일)를 수렴.
+- 중앙 로더 `agent_common.settings` — 흩어진 `os.getenv` 를 한 곳으로 수렴.
   `os.getenv` 직접 호출은 settings.py 외 금지(린트 강제).
-- 구→신 prefix 이행은 `env_with_alias` 로 무중단. (예: `TAXAGENT_*` → `TAX_AGENT_*`)
+- 구→신 prefix 이행은 `env_with_alias` 로 무중단. (예: 붙임형 `<NAME>AGENT_*` → `<NAME>_AGENT_*`)
 
 ## 4. 토글
 

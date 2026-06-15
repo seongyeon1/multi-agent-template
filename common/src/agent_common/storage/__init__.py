@@ -1,7 +1,7 @@
 """오브젝트 스토리지 (공통 인프라 stub).
 
 S3 호환 백업/아카이브 자리표시자. 구성값은 ``CommonSettings.s3_*`` 에서 읽고,
-``S3_RAW_ARCHIVE_ENABLED`` 토글로 기본 off. SKT 인스턴스가 boto3 구현을 채운다.
+``S3_RAW_ARCHIVE_ENABLED`` 토글로 기본 off. 상속 인스턴스가 boto3 구현을 채운다.
 """
 
 from __future__ import annotations

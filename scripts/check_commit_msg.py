@@ -5,7 +5,7 @@
   1. 제목은 `type(scope): subject` 형식.
      - type ∈ feat|fix|refactor|chore|docs|test|perf|build|ci|style|revert
      - scope 필수. 모노레포에서 scope 는 "건드린 영역" = 에이전트 slug 또는
-       common/ci/repo. (예: `refactor(tax-agent): …`, `feat(common): …`)
+       common/ci/repo. (예: `refactor(orders): …`, `feat(common): …`)
   2. 본문 어디에도 AI 흔적 라인 금지:
      `Co-Authored-By: ... Claude`, `🤖`, `Generated with`.
 
@@ -43,7 +43,7 @@ def validate(message: str) -> list[str]:
         errors.append(
             "제목이 'type(scope): subject' 규약을 따르지 않습니다.\n"
             f"    받은 제목: {header!r}\n"
-            "    예: refactor(tax-agent): TAXAGENT_ env 를 TAX_AGENT_ 로 통일"
+            "    예: refactor(orders): 주문 검증 규칙 정리"
         )
 
     for ln in lines:

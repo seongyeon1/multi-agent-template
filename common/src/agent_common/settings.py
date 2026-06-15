@@ -15,7 +15,7 @@
 두 네임스페이스
 ---------------
 1. 공통 인프라(에이전트 간 동일 게이트웨이): 안정 prefix 유지.
-   예) ``LLM_GW_*`` ``OCR_*`` ``S3_*`` ``REDIS_*`` ``PII_*`` + 플랫폼값
+   예) ``LLM_*`` ``S3_*`` ``REDIS_*`` ``PII_*`` + 플랫폼값
    ``ENVIRONMENT`` ``LOG_FORMAT`` ``ALLOWED_ORIGINS``.
    → :class:`CommonSettings` 가 담당.
 2. 에이전트 고유: ``<NAME>_AGENT_<KEY>`` (예 ``EXAMPLE_AGENT_API_PORT``).
@@ -71,8 +71,8 @@ def env_int(name: str, default: int) -> int:
 def env_with_alias(name: str, alias: str, default: str | None = None) -> str | None:
     """하위호환 시프트용. 새 이름(``name``) 우선, 없으면 구 이름(``alias``) 폴백.
 
-    이미 배포된 ``.env.prod`` 가 구 prefix(예 ``TAXAGENT_*``)를 들고 있을 때,
-    새 prefix(``TAX_AGENT_*``)로 옮기는 과도기에 deploy 를 깨지 않기 위함.
+    이미 배포된 ``.env`` 가 구 prefix(붙임형 등)를 들고 있을 때, 새 prefix
+    (``<NAME>_AGENT_*``)로 옮기는 과도기에 deploy 를 깨지 않기 위함.
     구 이름이 실제로 쓰이면 DeprecationWarning 으로 마이그레이션을 재촉한다.
     """
     new = env_str(name)
@@ -93,7 +93,7 @@ def env_with_alias(name: str, alias: str, default: str | None = None) -> str | N
 # 공통 인프라 설정 — 에이전트 간 공유. 새 에이전트는 이걸 그대로 받아 쓴다.
 # ─────────────────────────────────────────────────────────────────────────
 class CommonSettings:
-    """공통 prefix(``LLM_GW_`` ``OCR_`` ``S3_`` ``REDIS_`` ``PII_`` 등) 묶음.
+    """공통 prefix(``LLM_`` ``S3_`` ``REDIS_`` ``PII_`` 등) 묶음.
 
     프로세스당 한 번만 만들어 공유한다(:func:`get_common`). 필드는 생성 시점에
     eager 로 확정 — 런타임 중 환경변수 mutate 에 의존하지 않도록(테스트/예측 가능성).
@@ -108,8 +108,8 @@ class CommonSettings:
         self.allowed_origins: list[str] = [o.strip() for o in raw_origins.split(",") if o.strip()]
 
         # 공통 인프라 — 구체 클라이언트는 gateway/storage/pii 서브패키지가 이 값을 읽어 구성.
-        self.llm_gw_base_url: str | None = env_str("LLM_GW_BASE_URL")
-        self.llm_gw_verify_ssl: bool = env_bool("LLM_GW_VERIFY_SSL", True)
+        self.llm_base_url: str | None = env_str("LLM_BASE_URL")
+        self.llm_verify_ssl: bool = env_bool("LLM_VERIFY_SSL", True)
         self.redis_url: str | None = env_str("REDIS_URL")
         self.s3_bucket: str | None = env_str("S3_RAW_ARCHIVE_BUCKET")
         self.s3_region: str | None = env_str("S3_RAW_ARCHIVE_REGION")
@@ -150,7 +150,7 @@ class AgentSettings:
         if not prefix.endswith("_AGENT_") or prefix != prefix.upper():
             raise ValueError(
                 f"에이전트 prefix 는 대문자 '<NAME>_AGENT_' 형식이어야 합니다 (받음: {prefix!r}). "
-                "예: 'TAX_AGENT_', 'MEDICAL_AGENT_', 'EXAMPLE_AGENT_'."
+                "예: 'ORDERS_AGENT_', 'BILLING_AGENT_', 'EXAMPLE_AGENT_'."
             )
         self.prefix = prefix
         self.common = get_common()  # 공통값은 항상 함께 노출 → 호출부는 settings 하나만 본다.
