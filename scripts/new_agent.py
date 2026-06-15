@@ -82,7 +82,9 @@ def main(argv: list[str]) -> int:
             shutil.copy2(src, target)
 
     print(f"✓ 생성됨: agents/{slug}/  (env prefix: {snake.upper()}_AGENT_)")
-    print(f"  다음: agents/{slug}/.env.agent.example 를 채우고, CODEOWNERS 에 줄 추가.")
+    print(f"  1) ruff check --fix agents/{slug}  # 치환으로 흐트러진 import 정렬")
+    print(f"  2) agents/{slug}/.env.agent.example 채우고 CODEOWNERS 에 줄 추가")
+    print(f"  3) pyproject(import-linter root_packages/independence)·.gitlab-ci 에 {snake}_agent 추가")
     print("  CI 는 rules:changes 로 이 디렉토리만 자동 스코핑됩니다.")
     return 0
 
