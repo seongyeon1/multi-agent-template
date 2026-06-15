@@ -1,0 +1,72 @@
+# 모노레포 루트 — 공유 도구 설정(ruff/mypy/pytest/import-linter)의 단일 소스.
+# 패키지 자체는 common/ 과 agents/<x>/ 의 개별 pyproject 가 정의한다(editable 설치).
+# 루트는 "설치 가능한 패키지"가 아니라 도구 설정 + 워크스페이스 진입점.
+
+[project]
+name = "multi-agent-monorepo"
+version = "0.0.0"
+description = "Multi-agent 모노레포 — common 공유 + agent별 격리"
+requires-python = ">=3.11"
+
+# ─────────────────────────────────────────────────────────────
+# ruff — lint + format. 전 에이전트 동일 규칙.
+# ─────────────────────────────────────────────────────────────
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+# 벤더링/스캐폴드 원본 디렉토리는 lint 제외.
+extend-exclude = ["**/_vendored", "agents/_example"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = ["E402"]
+"**/api/*" = ["B008"]  # FastAPI Depends() 관례
+
+# ─────────────────────────────────────────────────────────────
+# mypy — CI 에서 allow-failure(점진 도입).
+# ─────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.11"
+strict_optional = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+# ─────────────────────────────────────────────────────────────
+# pytest
+# ─────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+python_files = ["test_*.py"]
+testpaths = ["common/tests", "agents"]
+
+# ─────────────────────────────────────────────────────────────
+# import-linter — 격리 계약. "공통은 공유, 에이전트끼리는 차단."
+#   계약 위반 = CI 실패. 새 에이전트 추가 시 independence 의 modules 에 패키지명 추가.
+# ─────────────────────────────────────────────────────────────
+[tool.importlinter]
+root_packages = ["agent_common", "example_agent"]
+# domain/application 순수성 계약이 외부 패키지(fastapi/starlette)를 forbidden 으로
+# 참조하므로 필수.
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "common 은 어떤 에이전트도 import 하지 않는다"
+type = "forbidden"
+source_modules = ["agent_common"]
+# 새 에이전트 추가 시 여기에 패키지명(예 tax_agent)을 더한다.
+forbidden_modules = ["example_agent"]
+
+[[tool.importlinter.contracts]]
+name = "에이전트끼리 상호 import 금지 (격리)"
+type = "independence"
+# 새 에이전트 추가 시 이 목록에 패키지명을 더한다 (tax_agent, medical_agent ...).
+modules = ["example_agent"]
+
+[[tool.importlinter.contracts]]
+name = "example_agent: domain/application 은 transport(FastAPI)에 의존하지 않는다"
+type = "forbidden"
+source_modules = ["example_agent.domain", "example_agent.application"]
+forbidden_modules = ["fastapi", "starlette", "example_agent.api"]

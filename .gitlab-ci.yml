@@ -1,0 +1,48 @@
+# 모노레포 CI — 격리의 핵심: rules:changes 로 "바뀐 에이전트만" 파이프라인 실행.
+#   - agents/<x>/** 만 바뀌면 → 그 에이전트 잡만 돈다 (다른 에이전트 무영향).
+#   - common/** 가 바뀌면 → 모든 에이전트 잡이 돈다 (공유 변경의 영향을 강제로 가시화).
+#   - 루트 lint/계약 잡은 항상 실행 (규약은 전역).
+#
+# 새 에이전트 추가 시: 아래 'agent:_example' 잡을 복제하고 경로/이름만 바꾼다.
+
+stages: [lint, test, build]
+
+default:
+  image: python:3.11-slim
+  before_script:
+    - pip install -e ./common -e "./common[dev]"
+
+# ── 전역 lint/계약 (항상 실행) ────────────────────────────────────
+lint:
+  stage: lint
+  script:
+    - pip install ruff import-linter
+    - ruff check .
+    - python scripts/lint_env_prefix.py        # env 규약 (os.getenv 금지 + prefix)
+    - lint-imports                              # 격리 계약 (common↔agent, agent↔agent)
+
+# ── 에이전트별 테스트 잡 템플릿 ───────────────────────────────────
+.agent_test:
+  stage: test
+  script:
+    - pip install -e "./agents/${AGENT_DIR}[dev]"
+    - pytest "agents/${AGENT_DIR}/tests" -q
+
+# common 단위 테스트 — common/** 변경 시.
+test:common:
+  stage: test
+  script:
+    - pip install -e "./common[dev]"
+    - pytest common/tests -q
+  rules:
+    - changes: [common/**/*]
+
+# example_agent — 자기 디렉토리 또는 common 변경 시에만.
+test:example:
+  extends: .agent_test
+  variables:
+    AGENT_DIR: "_example"
+  rules:
+    - changes:
+        - agents/_example/**/*
+        - common/**/*        # 공유 변경은 이 에이전트도 재검증

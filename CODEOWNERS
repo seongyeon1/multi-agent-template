@@ -1,0 +1,16 @@
+# 디렉토리별 소유자 — 리뷰 라우팅 + 실수로 옆 에이전트 건드리면 드러나게.
+# GitLab/GitHub 둘 다 인식. 새 에이전트 추가 시 한 줄 추가.
+
+# 공통 하네스 — 변경 영향이 전 에이전트에 미치므로 신중한 소유.
+/common/                      @platform-team
+
+# 규약/CI/스크립트 — 플랫폼 소유.
+/.gitlab-ci.yml               @platform-team
+/.github/                     @platform-team
+/scripts/                     @platform-team
+/CONVENTIONS.md               @platform-team
+
+# 에이전트별 — 각 도메인 팀 소유. (예시: 실제 핸들로 교체)
+/agents/_example/             @platform-team
+# /agents/tax/                @tax-team
+# /agents/medical/            @medical-team

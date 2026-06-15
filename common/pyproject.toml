@@ -1,0 +1,26 @@
+[project]
+name = "agent-common"
+version = "0.1.0"
+description = "모노레포 공통 하네스 — settings/logging/gateway/storage/pii"
+requires-python = ">=3.11"
+dependencies = [
+    # 공통 인프라가 필요로 하는 최소 의존만. 무거운 의존(boto3 등)은 구체 구현 시 추가.
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["agent_common*"]

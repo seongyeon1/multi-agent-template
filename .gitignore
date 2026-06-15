@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# 환경/시크릿 — .env 는 절대 커밋 금지(.example 만 추적)
+.env
+.env.*
+!.env.common.example
+!**/.env.agent.example
+
+# 도구 캐시
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.import_linter_cache/
+.hypothesis/
+
+# OS
+.DS_Store

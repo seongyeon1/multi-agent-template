@@ -1,0 +1,28 @@
+# GitHub Actions — 이 템플릿 repo(GitHub) 자신을 green 으로 유지하기 위한 최소 CI.
+# 실제 운영 파이프라인은 GitLab(.gitlab-ci.yml)이 정본이다. 여기선 lint + 전체 테스트만.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: install
+        run: |
+          pip install ruff import-linter
+          pip install -e ./common -e "./common[dev]"
+          pip install -e "./agents/_example[dev]"
+      - name: lint
+        run: |
+          ruff check .
+          python scripts/lint_env_prefix.py
+          lint-imports
+      - name: test
+        run: pytest common/tests agents/_example/tests -q

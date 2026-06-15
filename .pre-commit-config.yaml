@@ -1,0 +1,44 @@
+# pre-commit — 커밋/푸시 전 로컬 게이트. 빠른 것만 로컬에, 무거운 건 CI 로.
+#   설치:  pip install pre-commit && pre-commit install --hook-type commit-msg
+#   전체:  pre-commit run --all-files
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+
+  # ── 로컬 커스텀 훅 ── 규약을 코드로 강제 ──────────────────────────
+  - repo: local
+    hooks:
+      - id: env-prefix
+        name: env prefix/접근 규약 (os.getenv 금지 + <NAME>_AGENT_ prefix)
+        entry: python scripts/lint_env_prefix.py
+        language: system
+        types: [python]
+        # settings.py 자신은 면제(스크립트 내부에서 처리)
+
+      - id: import-linter
+        name: 격리 계약 (common↔agent, agent↔agent)
+        entry: lint-imports
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: commit-msg-conventional
+        name: Conventional Commit + scope + AI 흔적 차단
+        entry: python scripts/check_commit_msg.py
+        language: system
+        stages: [commit-msg]
